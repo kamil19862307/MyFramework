@@ -1,0 +1,26 @@
+У пользователей windows возникает и другая более глобальная проблема,
+помимо проблемы с правами на папки /storage и /bootstrap/cache (которая решается установкой прав 777 на них в контейнере).
+
+Все http запросы, запуск консольных команд или юниттестов, происходят с несколько секундной задержкой.
+Она возникает из-за того что наш код проекта лежит в файловой системе виндоуса,
+а запускается в виртуалке докера на ОС линукс, с соответсвующей файловой системой.
+Решение - WSL! Ставим его. Кладем код проекта в wsl убунту, к которому подключаем и наш IDE, и проблема решается.
+Код который мы правим находится в файловой системе линукс, и в ней же запукается в докер контейнере. Все начинает летать!
+
+docker-compose exec -T php chmod -R 777 /var/www/laravel/storage
+docker-compose exec -T php chmod -R 777 /var/www/laravel/database
+docker-compose exec -T php chmod -R 777 /var/www/laravel/bootstrap/cache
+
+Создать юзера. -m чтоб создалась домашняя дирректория -s чтоб этот пользователь мог использовать /bin/bash bart
+sudo useradd -m -s /bin/bash bart
+
+Добавить в группу Docker Докера. -aG docker чтоб добавить этому пользователю(bart) вторичную группу(docker)
+root@DESKTOP-BGG4UM5:~# usermod -aG docker bart
+
+Посмотреть id пользователя
+root@DESKTOP-BGG4UM5:~# id bart
+uid=1001(bart) gid=1002(bart) groups=1002(bart),1001(docker)
+root@DESKTOP-BGG4UM5:~# usermod -aG docker kamil
+
+
+
