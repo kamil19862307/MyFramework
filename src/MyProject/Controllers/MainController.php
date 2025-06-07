@@ -2,6 +2,7 @@
 
 namespace MyProject\Controllers;
 
+use MyProject\Models\Articles\Article;
 use MyProject\Services\Db;
 use MyProject\View\View;
 
@@ -9,7 +10,6 @@ class MainController
 {
     public function __construct(
         private $view = new View(__DIR__ . '/../../../templates'),
-        private $db = new Db(),
     )
     {
     }
@@ -18,7 +18,7 @@ class MainController
     {
         $title = 'Главная';
 
-        $articles = $this->db->query('SELECT `name`, `text` FROM `articles`;');
+        $articles = Article::findAll();
 
         $this->view->renderHtml('main/main.php', ['title' => $title, 'articles' => $articles]);
     }

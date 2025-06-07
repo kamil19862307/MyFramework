@@ -8,8 +8,10 @@ class View
     {
     }
 
-    public function renderHtml(string $templateName, array $vars = []): void
+    public function renderHtml(string $templateName, array $vars = [], int $responceCode = 200): void
     {
+        http_response_code($responceCode);
+
         extract($vars);
 
         ob_start();

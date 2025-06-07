@@ -3,12 +3,14 @@
 namespace MyProject\Models\Users;
 class User
 {
-    public function __construct(private string $name)
-    {
-    }
+    private string $nickname;
 
-    public function getName(): string
+    public function setNickname(string $name): void
     {
-        return $this->name;
+        $this->nickname = $name;
+    }
+    public function getNickname(): string
+    {
+        return $this->nickname;
     }
 }

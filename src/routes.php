@@ -1,7 +1,11 @@
 <?php
 
+use MyProject\Controllers\ArticlesController;
+use MyProject\Controllers\MainController;
+
 return [
-    '~^$~' => [\MyProject\Controllers\MainController::class, 'main'],
-    '~^hello/(.*)$~' => [\MyProject\Controllers\MainController::class, 'sayHello'],
-    '~^bye/(.*)$~' => [\MyProject\Controllers\MainController::class, 'sayBye'],
+    '~^$~' => [MainController::class, 'main'],
+    '~^articles/(\d+)$~' => [ArticlesController::class, 'view'],
+    '~^hello/(.*)$~' => [MainController::class, 'sayHello'],
+    '~^bye/(.*)$~' => [MainController::class, 'sayBye'],
 ];
