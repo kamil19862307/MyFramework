@@ -18,31 +18,20 @@ class ArticlesController
 
     public function view(int $articleId): void
     {
-        $article = $this->db->query(
-            'SELECT `author_id`, `name`, `text` FROM `articles` WHERE `id` = :id;',
-            ['id' => $articleId],
-            Article::class
-        );
+        $article = Article::getById($articleId);
 
-        if ($article === []) {
+        if ($article === null) {
             $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
+//
+//        $articleAuthor = User::getById($article->getAuthorId());
+//
+//        if ($articleAuthor === null) {
+//            $articleAuthor = new User();
+//            $articleAuthor->setNickname('Аноним');
+//        }
 
-        $authorId = $article[0]->getAuthorId();
-
-        $authorName = $this->db->query(
-            'SELECT `nickname` FROM `users` WHERE `id` = :id;',
-            ['id' => $authorId],
-            User::class
-        );
-
-        if ($authorName === []) {
-            $user = new User();
-            $user->setNickname('Аноним');
-            $authorName[0] = $user;
-        }
-
-        $this->view->renderHtml('articles/view.php', ['article' => $article[0], 'author' => $authorName[0]]);
+        $this->view->renderHtml('articles/view.php', ['article' => $article]);
     }
 }
