@@ -17,8 +17,6 @@ class User extends ActiveRecordEntity
 
     protected string $authToken;
 
-    protected string $createdAt;
-
     public function getNickname(): string
     {
         return $this->nickname;

@@ -11,7 +11,6 @@ class ArticlesController
 {
     public function __construct(
         private $view = new View(__DIR__ . '/../../../templates'),
-        private $db = new Db(),
     )
     {
     }
@@ -24,13 +23,6 @@ class ArticlesController
             $this->view->renderHtml('errors/404.php', [], 404);
             return;
         }
-//
-//        $articleAuthor = User::getById($article->getAuthorId());
-//
-//        if ($articleAuthor === null) {
-//            $articleAuthor = new User();
-//            $articleAuthor->setNickname('Аноним');
-//        }
 
         $this->view->renderHtml('articles/view.php', ['article' => $article]);
     }

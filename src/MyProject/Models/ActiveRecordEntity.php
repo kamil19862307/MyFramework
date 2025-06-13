@@ -8,6 +8,13 @@ abstract class ActiveRecordEntity
 {
     protected int $id;
 
+    protected string $createdAt;
+
+    public function getCreatedAt(): string
+    {
+        return $this->createdAt;
+    }
+
     public function getId(): int
     {
         return $this->id;
@@ -30,7 +37,7 @@ abstract class ActiveRecordEntity
      */
     public static function findAll(): array
     {
-        $db = new Db();
+        $db = Db::getInstance();
 
         return $db->query(
             'SELECT * FROM `' . static::getTableName() . '`;',
@@ -40,9 +47,9 @@ abstract class ActiveRecordEntity
 
     abstract protected static function getTableName(): string;
 
-    public static function getById(int $id)
+    public static function getById(int $id): static|null
     {
-        $db = new Db();
+        $db = Db::getInstance();
 
         $entities = $db->query(
             'SELECT * FROM `' . static::getTableName() . '` WHERE id = :id;',

@@ -13,8 +13,6 @@ class Article extends ActiveRecordEntity
 
     protected int $authorId;
 
-    protected string $createdAt;
-
     public function getAuthorId(): int
     {
         return (int) $this->authorId;
