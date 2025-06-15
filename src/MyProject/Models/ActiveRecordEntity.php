@@ -105,7 +105,19 @@ abstract class ActiveRecordEntity
 
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
+
         $this->id = $db->getLastInsertId();
+
+        $this->refreshDataAfterNewRowInDb();
+    }
+
+    private function refreshDataAfterNewRowInDb()
+    {
+        $dbObjArr = static::getById($this->id);
+
+        foreach ($dbObjArr as $property => $value) {
+            $this->$property = $value;
+        }
     }
 
     private function update(array $mappedProperties)
