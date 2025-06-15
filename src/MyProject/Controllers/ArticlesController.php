@@ -27,9 +27,20 @@ class ArticlesController
         $this->view->renderHtml('articles/view.php', ['article' => $article]);
     }
 
-    public function insert()
+    public function add()
     {
+        $article = new Article();
 
+        $author = User::getById(1);
+
+        $article->setAuthor($author);
+        $article->setName('Новое назвавние Статьи');
+        $article->setText('Новое назвавние Текста');
+
+        $article->save();
+
+        echo '<pre>';
+        var_dump($article);
     }
 
     public function edit(int $articleId)
@@ -41,8 +52,8 @@ class ArticlesController
             return;
         }
 
-        $article->setName('Новое назвавние Статьи 2');
-        $article->setText('Новое назвавние Текста 2');
+        $article->setName('Новое назвавние Статьи 10');
+        $article->setText('Новое назвавние Текста 10');
 
         $article->save();
 //        $this->view->renderHtml('articles/edit.php', ['article' => $article]);

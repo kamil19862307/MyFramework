@@ -6,9 +6,15 @@ use MyProject\Services\Db;
 
 abstract class ActiveRecordEntity
 {
-    protected int $id;
+    /**
+     * @var int
+     */
+    protected $id;
 
-    protected string $createdAt;
+    /**
+     * @var string
+     */
+    protected $createdAt;
 
     public function getCreatedAt(): string
     {
@@ -65,25 +71,41 @@ abstract class ActiveRecordEntity
         return $entities ? $entities[0] : null;
     }
 
-    public function save()
+    public function save(): void
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
 
-        if ($this->id !== null){
+        if (isset($this->id)){
             $this->update($mappedProperties);
         } else {
             $this->insert($mappedProperties);
         }
-
     }
 
     private function insert(array $mappedProperties)
     {
-        #Todo insert a new record in Db
+        $mappedProperties = array_filter($mappedProperties, function ($value){
+            return !is_null($value);
+        });
 
-        echo __METHOD__;
-        echo PHP_EOL;
-        var_dump($mappedProperties);
+        $columns = [];
+        $paramsNames = [];
+        $params2values = [];
+        foreach ($mappedProperties as $columnName => $value) {
+            $columns[] = '`' . $columnName . '`';
+            $paramName = ':' . $columnName;
+            $paramsNames[] = $paramName;
+            $params2values[$paramName] = $value;
+        }
+
+        $columnsViaSemicolon = implode(', ', $columns);
+        $paramsNamesViaSemicolon = implode(', ', $paramsNames);
+
+        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . $columnsViaSemicolon . ') VALUES (' . $paramsNamesViaSemicolon . ');';
+
+        $db = Db::getInstance();
+        $db->query($sql, $params2values, static::class);
+        $this->id = $db->getLastInsertId();
     }
 
     private function update(array $mappedProperties)
