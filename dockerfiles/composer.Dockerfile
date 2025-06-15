@@ -1,5 +1,5 @@
 FROM composer:latest
 
-WORKDIR /var/www/laravel
+WORKDIR /var/www
 
 ENTRYPOINT ["composer", "--ignore-platform-reqs"]

@@ -26,4 +26,25 @@ class ArticlesController
 
         $this->view->renderHtml('articles/view.php', ['article' => $article]);
     }
+
+    public function insert()
+    {
+
+    }
+
+    public function edit(int $articleId)
+    {
+        $article = Article::getById($articleId);
+
+        if ($article === null) {
+            $this->view->renderHtml('errors/404.php', [], 404);
+            return;
+        }
+
+        $article->setName('Новое назвавние Статьи 2');
+        $article->setText('Новое назвавние Текста 2');
+
+        $article->save();
+//        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
+    }
 }
