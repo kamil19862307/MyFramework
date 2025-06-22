@@ -2,6 +2,8 @@
 
 namespace MyProject\Controllers;
 
+use Exception;
+use MyProject\Exceptions\NotFoundException;
 use MyProject\Models\Articles\Article;
 use MyProject\Models\Users\User;
 use MyProject\Services\Db;
@@ -20,8 +22,7 @@ class ArticlesController
         $article = Article::getById($articleId);
 
         if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], 404);
-            return;
+            throw new NotFoundException('Статья удалена либо не существовала');
         }
 
         $this->view->renderHtml('articles/view.php', ['article' => $article]);
@@ -57,5 +58,19 @@ class ArticlesController
 
         $article->save();
 //        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
+    }
+
+    public function delete(int $articleId): void
+    {
+        $article = Article::getById($articleId);
+
+        if ($article === null) {
+            $this->view->renderHtml('errors/404.php', [], 404);
+            return;
+        }
+
+        $article->delete();
+
+        var_dump($article);
     }
 }

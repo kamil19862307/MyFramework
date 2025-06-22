@@ -75,7 +75,7 @@ abstract class ActiveRecordEntity
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
 
-        if (isset($this->id)){
+        if (isset($this->id)) {
             $this->update($mappedProperties);
         } else {
             $this->insert($mappedProperties);
@@ -84,18 +84,18 @@ abstract class ActiveRecordEntity
 
     private function insert(array $mappedProperties)
     {
-        $mappedProperties = array_filter($mappedProperties, function ($value){
-            return !is_null($value);
+        $mappedProperties = array_filter($mappedProperties, function ($value) {
+            return $value !== null;
         });
 
         $columns = [];
         $paramsNames = [];
         $params2values = [];
         foreach ($mappedProperties as $columnName => $value) {
-            $columns[] = '`' . $columnName . '`';
-            $paramName = ':' . $columnName;
+            $columns[] = '`' . $columnName . '`'; // `name`
+            $paramName = ':' . $columnName; // :name
             $paramsNames[] = $paramName;
-            $params2values[$paramName] = $value;
+            $params2values[$paramName] = $value; // :name => Новое название статьи
         }
 
         $columnsViaSemicolon = implode(', ', $columns);
@@ -111,14 +111,19 @@ abstract class ActiveRecordEntity
         $this->refreshDataAfterNewRowInDb();
     }
 
-    private function refreshDataAfterNewRowInDb()
-    {
-        $dbObjArr = static::getById($this->id);
 
-        foreach ($dbObjArr as $property => $value) {
-            $this->$property = $value;
-        }
+    public function delete(): void
+    {
+        // DELETE FROM `articles` WHERE id = :id
+        $sql = 'DELETE FROM `' . static::getTableName() . '` WHERE id = :id;';
+
+        $db = Db::getInstance();
+        $db->query($sql, [':id' => $this->id], static::class);
+
+        $this->id = null;
+
     }
+
 
     private function update(array $mappedProperties)
     {
@@ -139,6 +144,7 @@ abstract class ActiveRecordEntity
 
         $db->query($sql, $params2values, static::class);
     }
+
 
     private function mapPropertiesToDbFormat(): array
     {
@@ -166,5 +172,15 @@ abstract class ActiveRecordEntity
     private function camelCaseToUnderscore(string $source): string
     {
         return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $source));
+    }
+
+
+    private function refreshDataAfterNewRowInDb(): void
+    {
+        $dbObjArr = static::getById($this->id);
+
+        foreach ($dbObjArr as $property => $value) {
+            $this->$property = $value;
+        }
     }
 }
