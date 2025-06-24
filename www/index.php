@@ -1,5 +1,9 @@
 <?php
 
+use MyProject\Exceptions\DbException;
+use MyProject\Exceptions\NotFoundException;
+use MyProject\View\View;
+
 try {
 
     require __DIR__ . '/../vendor/autoload.php';
@@ -21,7 +25,7 @@ try {
     }
 
     if (!$isRouteFound) {
-        throw new \MyProject\Exceptions\NotFoundException('Страница отсутствует');
+        throw new NotFoundException('Страница отсутствует');
     }
 
     unset($matches[0]);
@@ -33,15 +37,15 @@ try {
 
     $controller->$actionName(...$matches);
 
-} catch (\MyProject\Exceptions\DbException $exception) {
+} catch (DbException $exception) {
 
-    $view = new \MyProject\View\View(__DIR__ . '/../templates/errors');
+    $view = new View(__DIR__ . '/../templates/errors');
 
     $view->renderHtml('500.php', ['error' => $exception->getMessage()], 500);
 
-} catch (\MyProject\Exceptions\NotFoundException $exception) {
+} catch (NotFoundException $exception) {
 
-    $view = new \MyProject\View\View(__DIR__ . '/../templates/errors');
+    $view = new View(__DIR__ . '/../templates/errors');
 
     $view->renderHtml('404.php', ['error' => $exception->getMessage()], 404);
 }

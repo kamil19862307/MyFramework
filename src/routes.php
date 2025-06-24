@@ -2,6 +2,7 @@
 
 use MyProject\Controllers\ArticlesController;
 use MyProject\Controllers\MainController;
+use MyProject\Controllers\UserController;
 
 return [
     '~^$~' => [MainController::class, 'main'],
@@ -11,4 +12,6 @@ return [
     '~^articles/(\d+)/delete$~' => [ArticlesController::class, 'delete'],
     '~^hello/(.*)$~' => [MainController::class, 'sayHello'],
     '~^bye/(.*)$~' => [MainController::class, 'sayBye'],
+    '~^users/register$~' => [UserController::class, 'signUp'],
+
 ];
