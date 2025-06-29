@@ -13,5 +13,6 @@ return [
     '~^hello/(.*)$~' => [MainController::class, 'sayHello'],
     '~^bye/(.*)$~' => [MainController::class, 'sayBye'],
     '~^users/register$~' => [UserController::class, 'signUp'],
+    '~^users/(\d+)/activate/(.+)$~' => [UserController::class, 'activate'],
 
 ];
