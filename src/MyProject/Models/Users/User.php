@@ -33,14 +33,30 @@ class User extends ActiveRecordEntity
         return $this->email;
     }
 
+    public function getPasswordHash(): string
+    {
+        return $this->passwordHash;
+    }
+
+    public function isConfirmed(): bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function getAuthToken(): string
+    {
+        return $this->authToken;
+    }
+
     protected static function getTableName(): string
     {
         return 'users';
     }
 
     /**
+     * @param array $userData
+     * @return User
      * @throws InvalidArgumentException
-     * if one of fields are empty
      */
     public static function signUp(array $userData): User
     {
@@ -101,5 +117,41 @@ class User extends ActiveRecordEntity
         $this->isConfirmed = true;
 
         $this->save();
+    }
+
+    public static function login(array $loginData): User
+    {
+        if (empty($loginData['email'])){
+            throw new InvalidArgumentException('Не передан Email');
+        }
+
+        if (empty($loginData['password'])){
+            throw new InvalidArgumentException('Не передан Password');
+        }
+
+        $user = User::findOneByColumn('email', $loginData['email']);
+
+        if ($user === null){
+            throw new InvalidArgumentException('Пользователя с таким Email не существует');
+        }
+
+        if (!password_verify($loginData['password'], $user->getPasswordHash())){
+            throw new InvalidArgumentException('Неправильный пароль');
+        }
+
+        if (!$user->isConfirmed()){
+            throw new InvalidArgumentException('Пользователь не подтверждён');
+        }
+
+        $user->refreshAuthToken();
+
+        $user->save();
+
+        return $user;
+    }
+
+    private function refreshAuthToken(): void
+    {
+        $this->authToken = sha1(random_bytes(100)) . sha1(random_bytes(100));
     }
 }

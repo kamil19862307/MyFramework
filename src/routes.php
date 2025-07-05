@@ -14,5 +14,7 @@ return [
     '~^bye/(.*)$~' => [MainController::class, 'sayBye'],
     '~^users/register$~' => [UserController::class, 'signUp'],
     '~^users/(\d+)/activate/(.+)$~' => [UserController::class, 'activate'],
+    '~^users/login$~' => [UserController::class, 'login'],
+    '~^users/logout$~' => [UserController::class, 'logout'],
 
 ];

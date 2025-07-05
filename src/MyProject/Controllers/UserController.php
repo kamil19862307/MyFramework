@@ -5,22 +5,13 @@ namespace MyProject\Controllers;
 use MyProject\Exceptions\InvalidArgumentException;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UserActivationService;
+use MyProject\Models\Users\UsersAuthService;
 use MyProject\Services\Db;
 use MyProject\Services\EmailSender;
 use MyProject\View\View;
 
-class UserController
+class UserController extends AbstractController
 {
-    /**
-     * @var string view
-     */
-    private $view;
-
-    public function __construct()
-    {
-        $this->view = new View(__DIR__ . '/../../../templates');
-    }
-
     public function signUp(): void
     {
         $title = 'Регистрация нового пользователя';
@@ -72,6 +63,40 @@ class UserController
             UserActivationService::deleteActivationCode($user_id);
 
             $this->view->renderHtml('users/activationSuccessfull.php', );
+
+        } else{
+            $error = 'Код активации не совпадает или не найден.';
+
+            $this->view->renderHtml('errors/404.php', ['error' => $error]);
         }
+    }
+
+    public function login()
+    {
+        if (!empty($_POST)){
+            try {
+                $user = User::login($_POST);
+
+                UsersAuthService::createToken($user);
+
+                header('Location: /');
+
+                exit();
+
+            } catch (InvalidArgumentException $exception){
+                $this->view->renderHtml('users/login.php', ['error' => $exception->getMessage()]);
+
+                return;
+            }
+        }
+
+        $this->view->renderHtml('users/login.php');
+    }
+
+    public function logOut()
+    {
+        setcookie('token', '', -1, '/', false, true);
+
+        header('Location: /');
     }
 }

@@ -3,16 +3,12 @@
 namespace MyProject\Controllers;
 
 use MyProject\Models\Articles\Article;
+use MyProject\Models\Users\User;
+use MyProject\Models\Users\UsersAuthService;
 use MyProject\View\View;
 
-class MainController
+class MainController extends AbstractController
 {
-    public function __construct(
-        private $view = new View(__DIR__ . '/../../../templates'),
-    )
-    {
-    }
-
     public function main(): void
     {
         $title = 'Главная';

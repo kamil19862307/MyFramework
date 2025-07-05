@@ -6,17 +6,12 @@ use Exception;
 use MyProject\Exceptions\NotFoundException;
 use MyProject\Models\Articles\Article;
 use MyProject\Models\Users\User;
+use MyProject\Models\Users\UsersAuthService;
 use MyProject\Services\Db;
 use MyProject\View\View;
 
-class ArticlesController
+class ArticlesController extends AbstractController
 {
-    public function __construct(
-        private $view = new View(__DIR__ . '/../../../templates'),
-    )
-    {
-    }
-
     public function view(int $articleId): void
     {
         $article = Article::getById($articleId);
