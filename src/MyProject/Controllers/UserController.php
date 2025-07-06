@@ -28,7 +28,7 @@ class UserController extends AbstractController
                 return;
             }
 
-            if ($user instanceof User){
+            if ($user instanceof User) {
                 $title = 'Регистрация успешна!';
 
                 // Помещаем в таблицу код активации и его же возвращаем
@@ -56,15 +56,15 @@ class UserController extends AbstractController
 
         $isCodeValid = UserActivationService::checkActivationCode($user, $activationCode);
 
-        if ($isCodeValid){
+        if ($isCodeValid) {
             $user->activate();
 
             // Если активация прошла успешно, удаляем код из базы
             UserActivationService::deleteActivationCode($user_id);
 
-            $this->view->renderHtml('users/activationSuccessfull.php', );
+            $this->view->renderHtml('users/activationSuccessfull.php',);
 
-        } else{
+        } else {
             $error = 'Код активации не совпадает или не найден.';
 
             $this->view->renderHtml('errors/404.php', ['error' => $error]);
@@ -73,7 +73,7 @@ class UserController extends AbstractController
 
     public function login()
     {
-        if (!empty($_POST)){
+        if (!empty($_POST)) {
             try {
                 $user = User::login($_POST);
 
@@ -83,7 +83,7 @@ class UserController extends AbstractController
 
                 exit();
 
-            } catch (InvalidArgumentException $exception){
+            } catch (InvalidArgumentException $exception) {
                 $this->view->renderHtml('users/login.php', ['error' => $exception->getMessage()]);
 
                 return;
@@ -93,10 +93,14 @@ class UserController extends AbstractController
         $this->view->renderHtml('users/login.php');
     }
 
-    public function logOut()
+    public function logOut(): void
     {
-        setcookie('token', '', -1, '/', false, true);
+        if (isset($_COOKIE['token'])) {
+            setcookie('token', '', -1, '/', false, true);
 
-        header('Location: /');
+            header('Location: /');
+        }
+
+        return;
     }
 }
