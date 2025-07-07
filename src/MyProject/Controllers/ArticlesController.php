@@ -3,7 +3,10 @@
 namespace MyProject\Controllers;
 
 use Exception;
+use MyProject\Exceptions\ForbiddenException;
+use MyProject\Exceptions\InvalidArgumentException;
 use MyProject\Exceptions\NotFoundException;
+use MyProject\Exceptions\UnauthoraizedException;
 use MyProject\Models\Articles\Article;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UsersAuthService;
@@ -23,20 +26,30 @@ class ArticlesController extends AbstractController
         $this->view->renderHtml('articles/view.php', ['article' => $article]);
     }
 
-    public function add()
+    public function add(): void
     {
-        $article = new Article();
+        if ($this->user === null) {
+            throw new UnauthoraizedException('Ошибка авторизации');
+        }
 
-        $author = User::getById(1);
+        if (!empty($_POST)) {
+            try {
+                $article = Article::createFromArray($_POST, $this->user);
 
-        $article->setAuthor($author);
-        $article->setName('Новое назвавние Статьи');
-        $article->setText('Новое назвавние Текста');
+            } catch (InvalidArgumentException $exception){
+                $this->view->renderHtml('articles/add.php', ['error' => $exception->getMessage()]);
+                return;
 
-        $article->save();
+            } catch (ForbiddenException $exception) {
+                $this->view->renderHtml('errors/403.php', ['error' => $exception->getMessage()], 403);
+                return;
+            }
 
-        echo '<pre>';
-        var_dump($article);
+            header('Location: /articles/' . $article->getId(), true, 302);
+            exit();
+        }
+
+        $this->view->renderHtml('articles/add.php');
     }
 
     public function edit(int $articleId)

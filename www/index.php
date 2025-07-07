@@ -1,7 +1,9 @@
 <?php
 
 use MyProject\Exceptions\DbException;
+use MyProject\Exceptions\ForbiddenException;
 use MyProject\Exceptions\NotFoundException;
+use MyProject\Exceptions\UnauthoraizedException;
 use MyProject\View\View;
 
 try {
@@ -48,4 +50,11 @@ try {
     $view = new View(__DIR__ . '/../templates/errors');
 
     $view->renderHtml('404.php', ['error' => $exception->getMessage()], 404);
+
+} catch (UnauthoraizedException $exception) {
+
+    $view = new View( __DIR__ . '/../templates/errors');
+
+    $view->renderHtml('401.php', ['error' => $exception->getMessage()], 401);
+
 }
