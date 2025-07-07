@@ -58,6 +58,11 @@ class User extends ActiveRecordEntity
         return 'users';
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
     /**
      * @param array $userData
      * @return User

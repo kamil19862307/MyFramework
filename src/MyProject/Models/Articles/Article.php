@@ -69,7 +69,7 @@ class Article extends ActiveRecordEntity
             throw new InvalidArgumentException('Текст статьи не может быть пустым');
         }
 
-        if ($user->getRole() !== 'admin') {
+        if (!$user->isAdmin()) {
             throw new ForbiddenException('Недостаточно прав');
         }
 
