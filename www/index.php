@@ -57,4 +57,10 @@ try {
 
     $view->renderHtml('401.php', ['error' => $exception->getMessage()], 401);
 
+} catch (ForbiddenException $exception) {
+
+    $view = new View( __DIR__ . '/../templates/errors');
+
+    $view->renderHtml('403.php', ['error' => $exception->getMessage()], 403);
 }
+

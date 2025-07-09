@@ -23,7 +23,13 @@ class ArticlesController extends AbstractController
             throw new NotFoundException('Статья удалена либо не существовала');
         }
 
-        $this->view->renderHtml('articles/view.php', ['article' => $article]);
+        if ($this->user->isAdmin() && $this->user !== null) {
+            $isAdmin = true;
+        } else {
+            $isAdmin = false;
+        }
+
+        $this->view->renderHtml('articles/view.php', ['article' => $article, 'isAdmin' => $isAdmin]);
     }
 
     public function add(): void
@@ -57,15 +63,33 @@ class ArticlesController extends AbstractController
         $article = Article::getById($articleId);
 
         if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], 404);
-            return;
+            throw new NotFoundException('Не могу найти такую статью');
         }
 
-        $article->setName('Новое назвавние Статьи 10');
-        $article->setText('Новое назвавние Текста 10');
+        if ($this->user === null) {
+            throw new UnauthoraizedException('Нет такого пользовавтеля');
+        }
 
-        $article->save();
-//        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
+        if (!$this->user->isAdmin()) {
+            throw new ForbiddenException('Упс, Недостаточно прав');
+        }
+
+        if (!empty($_POST)) {
+            try {
+                $article->updateFromArray($_POST, $this->user);
+
+            } catch (InvalidArgumentException $exception) {
+                $this->view->renderHtml('articles/edit.php',
+                    ['error' => $exception->getMessage(), 'article' => $article]);
+
+                return;
+            }
+
+            header('Location: /articles/' . $article->getId(), true, 302);
+            exit();
+        }
+
+        $this->view->renderHtml('articles/edit.php', ['article' => $article]);
     }
 
     public function delete(int $articleId): void

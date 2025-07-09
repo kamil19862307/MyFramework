@@ -83,5 +83,23 @@ class Article extends ActiveRecordEntity
 
         return $article;
     }
+
+    public function updateFromArray(array $fields): Article
+    {
+        if (empty($fields['name'])) {
+            throw new InvalidArgumentException('Название статьи не может быть пустым');
+        }
+
+        if (empty($fields['text'])) {
+            throw new InvalidArgumentException('Текст статьи не может быть пустым');
+        }
+
+        $this->setName($fields['name']);
+        $this->setText($fields['text']);
+
+        $this->save();
+
+        return $this;
+    }
 }
 
