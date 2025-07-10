@@ -17,16 +17,16 @@ class ArticlesController extends AbstractController
 {
     public function view(int $articleId): void
     {
+        $isAdmin = false;
+
         $article = Article::getById($articleId);
 
         if ($article === null) {
             throw new NotFoundException('Статья удалена либо не существовала');
         }
 
-        if ($this->user->isAdmin() && $this->user !== null) {
-            $isAdmin = true;
-        } else {
-            $isAdmin = false;
+        if ($this->user !== null) {
+            $isAdmin = $this->user->isAdmin();
         }
 
         $this->view->renderHtml('articles/view.php', ['article' => $article, 'isAdmin' => $isAdmin]);
