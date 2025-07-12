@@ -88,6 +88,23 @@ abstract class ActiveRecordEntity
 
     }
 
+    public static function findAllByColumn(string $columnName, $value): null|array
+    {
+        $db = Db::getInstance();
+        $result = $db->query(
+            'SELECT * FROM `' . static::getTableName() . '` WHERE `' . $columnName . '` = :value;',
+            [':value' => $value],
+            static::class
+        );
+
+        if ($result === []){
+            return null;
+        }
+
+        return $result;
+
+    }
+
     public function save(): void
     {
         $mappedProperties = $this->mapPropertiesToDbFormat();
@@ -138,7 +155,6 @@ abstract class ActiveRecordEntity
         $db->query($sql, [':id' => $this->id], static::class);
 
         $this->id = null;
-
     }
 
 

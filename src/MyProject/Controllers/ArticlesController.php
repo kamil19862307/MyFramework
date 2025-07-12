@@ -8,6 +8,7 @@ use MyProject\Exceptions\InvalidArgumentException;
 use MyProject\Exceptions\NotFoundException;
 use MyProject\Exceptions\UnauthoraizedException;
 use MyProject\Models\Articles\Article;
+use MyProject\Models\Comments\Comment;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UsersAuthService;
 use MyProject\Services\Db;
@@ -21,15 +22,26 @@ class ArticlesController extends AbstractController
 
         $article = Article::getById($articleId);
 
+        $comments = Comment::findAllByColumn('article_id', $articleId);
+
         if ($article === null) {
             throw new NotFoundException('Статья удалена либо не существовала');
+        }
+
+        if ($comments === null) {
+            throw new NotFoundException('Нет комментариев');
         }
 
         if ($this->user !== null) {
             $isAdmin = $this->user->isAdmin();
         }
 
-        $this->view->renderHtml('articles/view.php', ['article' => $article, 'isAdmin' => $isAdmin]);
+        $this->view->renderHtml('articles/view.php',
+            [
+                'article' => $article,
+                'comments' => $comments,
+                'isAdmin' => $isAdmin
+            ]);
     }
 
     public function add(): void
