@@ -48,7 +48,7 @@ class CommentController extends AbstractController
             throw new UnauthoraizedException('Нет такого пользователя');
         }
 
-        if (!$this->user->isAdmin()){
+        if (!$this->user->isAdmin() && $this->user->getId() !== $comment->getAuthorId()){
             throw new ForbiddenException('У вас недостаточно прав');
         }
 
@@ -68,5 +68,23 @@ class CommentController extends AbstractController
         }
 
         $this->view->renderHtml('comments/edit.php', ['comment' => $comment]);
+    }
+
+    public function delete(int $commentId): void
+    {
+        $comment = Comment::getById($commentId);
+
+        if ($comment === null){
+            $this->view->renderHtml('errors/404.php', [], 404);
+
+            return;
+        }
+
+        $articleId = $comment->getArticleId();
+
+        $comment->delete();
+
+        header('Location: /articles/' . $articleId, true, 302);
+        exit();
     }
 }

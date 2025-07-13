@@ -15,6 +15,10 @@
 
     <h2>Комментарии</h2>
 
+<?php if(is_string($comments)): ?>
+    <?php echo $comments ?>
+
+<?php else: ?>
 
 <?php foreach ($comments as $comment): ?>
 
@@ -35,6 +39,7 @@
 
 <?php endforeach; ?>
 
+<?php endif; ?>
     <hr>
 
     <h2>Добавить комментарий</h2>

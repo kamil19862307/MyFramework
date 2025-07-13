@@ -29,7 +29,7 @@ class ArticlesController extends AbstractController
         }
 
         if ($comments === null) {
-            throw new NotFoundException('Нет комментариев');
+            $comments = 'Пока нет комментариев';
         }
 
         if ($this->user !== null) {

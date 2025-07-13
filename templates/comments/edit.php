@@ -13,6 +13,7 @@
         <br>
         <input type="submit" value="Сохранить">
         <input type="reset" value="Сбросить">
+        <a href="/comments/<?= $comment->getId() ?>/delete"><button type="button">Удалить</button></a>
         <a href="/"><button type="button">Отмена</button></a>
     </form>
 
