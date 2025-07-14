@@ -109,12 +109,19 @@ class ArticlesController extends AbstractController
         $article = Article::getById($articleId);
 
         if ($article === null) {
-            $this->view->renderHtml('errors/404.php', [], 404);
+            $this->view->renderHtml('errors/404.php', ['error' => 'Нет такой статьи'], 404);
             return;
+        }
+
+        // Also delete comments that relate to the article
+        while ($comment = Comment::findOneByColumn('article_id', $articleId)) {
+            $comment->delete();
         }
 
         $article->delete();
 
-        var_dump($article);
+        header('Location: /', true, 302);
+
+        exit();
     }
 }

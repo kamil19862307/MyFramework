@@ -71,13 +71,19 @@ class UserController extends AbstractController
         }
     }
 
-    public function login()
+    public function login(): void
     {
         if (!empty($_POST)) {
             try {
                 $user = User::login($_POST);
 
                 UsersAuthService::createToken($user);
+
+                if ($user->isAdmin()) {
+                    header('Location: /admin');
+
+                    exit();
+                }
 
                 header('Location: /');
 
