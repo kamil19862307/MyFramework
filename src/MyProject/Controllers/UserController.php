@@ -12,6 +12,15 @@ use MyProject\View\View;
 
 class UserController extends AbstractController
 {
+    public function view(): void
+    {
+        $title = 'Все пользовелели';
+
+        $users = User::findAll();
+
+        $this->view->renderHtml('admin/users.php', ['title' => $title, 'users' => $users]);
+    }
+    
     public function signUp(): void
     {
         $title = 'Регистрация нового пользователя';

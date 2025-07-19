@@ -20,14 +20,10 @@
 
 
 
-<?php //foreach ($articles as $article): ?>
-<!--    <h2><a href="/articles/--><?php //= $article->getId() ?><!--"> --><?php //= $article->getName() ?><!--</a></h2>-->
-<!--    <p>--><?php //= $article->getText() ?><!--</p>-->
-<!--    <h5>Дата: --><?php //= $article->getCreatedAt() ?><!--</h5>-->
-<!--    <h5>ID: --><?php //= $article->getid() ?><!--</h5>-->
-<!--    <h5>Автор: <a href="#">--><?php //= $article->getAuthor()->getNickname() ?><!--</a></h5>-->
-<!---->
-<!--    <hr>-->
-<?php //endforeach; ?>
+<?php foreach ($users as $user): ?>
+    <h2><?= $user->getNickname()?></h2>
+
+    <hr>
+<?php endforeach; ?>
 
 <?php include __DIR__ . '/../footer.php' ?>

@@ -32,7 +32,7 @@ return [
     '~^admin$~' => [AdminController::class, 'main'],
     '~^admin/articles/$~' => [AdminController::class, 'articles'],
     '~^admin/comments/$~' => [AdminController::class, 'comments'],
-    '~^admin/users/$~' => [AdminController::class, 'users'],
+    '~^admin/users/$~' => [UserController::class, 'view'],
 
 
     // Other routs
