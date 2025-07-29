@@ -53,6 +53,11 @@ class User extends ActiveRecordEntity
         return $this->role;
     }
 
+    public function setRole(string $role): void
+    {
+        $this->role = $role;
+    }
+
     protected static function getTableName(): string
     {
         return 'users';
@@ -163,5 +168,23 @@ class User extends ActiveRecordEntity
     private function refreshAuthToken(): void
     {
         $this->authToken = sha1(random_bytes(100)) . sha1(random_bytes(100));
+    }
+
+    public function updateFromArray(array $fields): User
+    {
+        if (empty($fields['name'])) {
+            throw new InvalidArgumentException('Поле Никнейм не может быть пустым');
+        }
+
+        if (empty($fields['role'])) {
+            throw new InvalidArgumentException('Поле Роль не может быть пустым');
+        }
+
+        $this->setNickname($fields['name']);
+        $this->setRole($fields['role']);
+
+        $this->save();
+
+        return $this;
     }
 }

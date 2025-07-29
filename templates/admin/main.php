@@ -14,7 +14,7 @@
 </div>
 <br>
 <div>
-    <a href="/admin/users/"><button type="button">К списку всех пользователей</button></a>
+    <a href="/admin/users"><button type="button">К списку всех пользователей</button></a>
 </div>
 <hr>
 

@@ -18,7 +18,7 @@ class AbstractController
 
         $this->view = new View(__DIR__ . '/../../../templates');
 
-        $this->view->setVar('user', $this->user);
+        $this->view->setVar('currentUser', $this->user);
     }
 
 }

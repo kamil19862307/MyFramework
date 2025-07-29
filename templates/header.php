@@ -16,8 +16,8 @@
     <tr>
         <td colspan="2" style="text-align: right">
             <?php
-                if (!empty($user)){
-                    echo 'Привет, ' . $user->getNickname() . ' | <a href="/users/logout">Выйти</a>';
+                if (!empty($currentUser)){
+                    echo 'Привет, ' . $currentUser->getNickname() . ' | <a href="/users/logout">Выйти</a>';
 
                 } else {
                     echo '<a href="/users/login">Войти</a> | <a href="/users/register">Зарегистрироваться</a>';

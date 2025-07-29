@@ -14,7 +14,7 @@ use MyProject\Models\Users\UsersAuthService;
 use MyProject\Services\Db;
 use MyProject\View\View;
 
-class ArticlesController extends AbstractController
+class ArticleController extends AbstractController
 {
     public function view(int $articleId): void
     {
@@ -88,7 +88,7 @@ class ArticlesController extends AbstractController
 
         if (!empty($_POST)) {
             try {
-                $article->updateFromArray($_POST, $this->user);
+                $article->updateFromArray($_POST);
 
             } catch (InvalidArgumentException $exception) {
                 $this->view->renderHtml('articles/edit.php',

@@ -1,6 +1,6 @@
 <?php include __DIR__ . '/../header.php' ?>
 
-<?php if (!$user->isAdmin()):?>
+<?php if (!$currentUser->isAdmin()):?>
     <h1>У вас нет прав для доступа к этой странице</h1>
 <?php exit(); endif; ?>
 
@@ -14,7 +14,7 @@
 </div>
 <br>
 <div>
-    <a href="/admin/users/"><button type="button">К списку всех пользователей</button></a>
+    <a href="/admin/users"><button type="button">К списку всех пользователей</button></a>
 </div>
 <hr>
 
@@ -22,7 +22,10 @@
 
 <?php foreach ($users as $user): ?>
     <h2><?= $user->getNickname()?></h2>
-
+    <br>
+    <div>
+        <a href="/admin/users/<?= $user->getId() ?>/edit"><button type="button">Изменить</button></a>
+    </div>
     <hr>
 <?php endforeach; ?>
 

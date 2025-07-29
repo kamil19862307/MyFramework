@@ -2,6 +2,7 @@
 
 namespace MyProject\Controllers;
 
+use MyProject\Exceptions\ForbiddenException;
 use MyProject\Exceptions\InvalidArgumentException;
 use MyProject\Models\Users\User;
 use MyProject\Models\Users\UserActivationService;
@@ -19,6 +20,81 @@ class UserController extends AbstractController
         $users = User::findAll();
 
         $this->view->renderHtml('admin/users.php', ['title' => $title, 'users' => $users]);
+    }
+
+    public function add()
+    {
+        $title = 'Создание пользователя';
+
+        if (!empty($_POST)) {
+            try {
+                User::signUp($_POST);
+
+                header('Location: /admin/users', true, 302);
+                exit();
+
+            } catch (InvalidArgumentException $exception) {
+                $this->view->renderHtml('admin/users/add.php', [
+                    'title' => $this,
+                    'error' => $exception->getMessage()
+                ]);
+            }
+        }
+
+        $this->view->renderHtml('admin/users/add.php', ['title' => $title]);
+    }
+
+    public function edit(int $userId)
+    {
+        $title = 'Редактирование пользователя';
+
+        $user = User::getById($userId);
+
+        if (!empty($_POST)) {
+            try {
+                $user->updateFromArray($_POST);
+
+                header('Location: /admin/users', true, 302);
+                exit();
+
+            } catch (InvalidArgumentException $exception) {
+                $this->view->renderHtml('admin/users/edit.php', [
+                    'error' => $exception->getMessage(),
+                    'user' => $user
+                ]);
+
+                return;
+            }
+        }
+
+        $this->view->renderHtml('admin/users/edit.php', ['title' => $title, 'user' => $user]);
+    }
+
+    public function delete(int $userId)
+    {
+        $user = User::getById($userId);
+
+        if ($user === null) {
+
+            $this->view->renderHtml('errors/404.php', ['error' => 'Нет такого пользователя'], 404);
+
+            return;
+        }
+
+        if ($user->getId() === $this->user->getId()) {
+            throw new ForbiddenException('Невозможно удалить самого себя');
+        }
+
+        if ($user->isAdmin()) {
+            throw new ForbiddenException('Невозможно удалить администтратора');
+        }
+
+
+        $user->delete();
+
+        header('Location: /admin/users', true, 302);
+
+        exit();
     }
     
     public function signUp(): void
