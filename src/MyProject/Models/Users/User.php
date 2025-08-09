@@ -14,6 +14,8 @@ class User extends ActiveRecordEntity
 
     protected string $role;
 
+    protected string|null $avatar;
+
     protected string $passwordHash;
 
     protected string $authToken;
@@ -56,6 +58,16 @@ class User extends ActiveRecordEntity
     public function setRole(string $role): void
     {
         $this->role = $role;
+    }
+
+    public function getAvatar(): string|null
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar): void
+    {
+        $this->avatar = $avatar;
     }
 
     protected static function getTableName(): string

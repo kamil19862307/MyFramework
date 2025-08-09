@@ -50,9 +50,50 @@ class UserController extends AbstractController
 
         $user = User::getById($userId);
 
+
+
         if (!empty($_POST)) {
             try {
                 $user->updateFromArray($_POST);
+
+                // Загружаем картинку
+                if (!empty($_FILES['avatar'])) {
+                    $file = $_FILES['avatar'];
+
+                    // Узнаём расширение файла
+                    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+
+                    $allowedExtensions = ['png', 'jpg', 'gif'];
+
+                    // Если загружаемый файл не 'png', 'jpg', 'gif', то выдаём исключение
+                    if (!in_array($extension, $allowedExtensions)) {
+
+                        throw new InvalidArgumentException('Загрружать можно только изображения');
+                    }
+
+                    // Даём название файлу типа: user_1_avatar_уникальноеid.png
+                    $srcFileName = uniqid('user_' . $user->getId() . '_avatar_', true) . '.' . $extension;
+
+                    $newFilePath = __DIR__ . '/../../../www/uploads/' . $srcFileName;
+
+                    // Если есть ошибка при загрузке, то выдаём исключение
+                    if ($file['error'] !== UPLOAD_ERR_OK) {
+
+                        throw new InvalidArgumentException('Не могу загрузить файл, ошибка');
+                    }
+
+                    // Если такая картринка уже есть, то выдаём исключение
+                    if (file_exists($newFilePath)) {
+
+                        throw new InvalidArgumentException('Файл с таким именем уже существует');
+                    }
+
+                    // Если не получается загрузить картинку, то выдаём исключение
+                    if (!move_uploaded_file($file['tmp_name'], $newFilePath)) {
+
+                        throw new InvalidArgumentException('Не могу загрузить файл, что-то полшо не так');
+                    }
+                }
 
                 header('Location: /admin/users', true, 302);
                 exit();
