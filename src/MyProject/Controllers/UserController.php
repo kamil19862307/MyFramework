@@ -9,6 +9,7 @@ use MyProject\Models\Users\UserActivationService;
 use MyProject\Models\Users\UsersAuthService;
 use MyProject\Services\Db;
 use MyProject\Services\EmailSender;
+use MyProject\Services\ImageUploader;
 use MyProject\View\View;
 
 class UserController extends AbstractController
@@ -44,7 +45,7 @@ class UserController extends AbstractController
         $this->view->renderHtml('admin/users/add.php', ['title' => $title]);
     }
 
-    public function edit(int $userId)
+    public function edit(int $userId): void
     {
         $title = 'Редактирование пользователя';
 
@@ -60,39 +61,9 @@ class UserController extends AbstractController
                 if (!empty($_FILES['avatar'])) {
                     $file = $_FILES['avatar'];
 
-                    // Узнаём расширение файла
-                    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                    $uploader = new ImageUploader(__DIR__ . '/../../../www/uploads/');
 
-                    $allowedExtensions = ['png', 'jpg', 'gif'];
-
-                    // Если загружаемый файл не 'png', 'jpg', 'gif', то выдаём исключение
-                    if (!in_array($extension, $allowedExtensions)) {
-
-                        throw new InvalidArgumentException('Загрружать можно только изображения');
-                    }
-
-                    // Даём название файлу типа: user_1_avatar_уникальноеid.png
-                    $srcFileName = uniqid('user_' . $user->getId() . '_avatar_', true) . '.' . $extension;
-
-                    $newFilePath = __DIR__ . '/../../../www/uploads/' . $srcFileName;
-
-                    // Если есть ошибка при загрузке, то выдаём исключение
-                    if ($file['error'] !== UPLOAD_ERR_OK) {
-
-                        throw new InvalidArgumentException('Не могу загрузить файл, ошибка');
-                    }
-
-                    // Если такая картринка уже есть, то выдаём исключение
-                    if (file_exists($newFilePath)) {
-
-                        throw new InvalidArgumentException('Файл с таким именем уже существует');
-                    }
-
-                    // Если не получается загрузить картинку, то выдаём исключение
-                    if (!move_uploaded_file($file['tmp_name'], $newFilePath)) {
-
-                        throw new InvalidArgumentException('Не могу загрузить файл, что-то полшо не так');
-                    }
+                    $fileName = $uploader->upload($file);
                 }
 
                 header('Location: /admin/users', true, 302);
