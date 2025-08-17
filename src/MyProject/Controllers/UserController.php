@@ -55,8 +55,6 @@ class UserController extends AbstractController
 
         if (!empty($_POST)) {
             try {
-                $user->updateFromArray($_POST);
-
                 // Загружаем картинку
                 if (!empty($_FILES['avatar'])) {
                     $file = $_FILES['avatar'];
@@ -64,7 +62,13 @@ class UserController extends AbstractController
                     $uploader = new ImageUploader(__DIR__ . '/../../../www/uploads/');
 
                     $fileName = $uploader->upload($file);
+
+                    $_POST['avatar'] = $fileName;
+
+                    $user->updateFromArray($_POST);
                 }
+
+                $user->updateFromArray($_POST);
 
                 header('Location: /admin/users', true, 302);
                 exit();

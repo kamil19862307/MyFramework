@@ -194,6 +194,7 @@ class User extends ActiveRecordEntity
 
         $this->setNickname($fields['name']);
         $this->setRole($fields['role']);
+        $this->setAvatar($fields['avatar']);
 
         $this->save();
 

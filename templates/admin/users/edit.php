@@ -16,6 +16,8 @@
         <br>
         <br>
 
+        <img src="/uploads/<?= $user->getAvatar()?>" alt="" width="300" height="300">
+
         <input type="submit" value="Сохранить">
         <input type="reset" value="Сбросить">
         <a href="/admin/users/<?= $user->getId() ?>/delete"><button type="button">Удалить</button></a>
