@@ -67,4 +67,13 @@ class ImageUploader
 
         return $fileName;
     }
+
+    public function delete(): void
+    {
+        $fullNameToOldImage = $this->uploadDir . $this->oldImageName;
+
+        if (file_exists($fullNameToOldImage)) {
+            unlink($fullNameToOldImage);
+        }
+    }
 }

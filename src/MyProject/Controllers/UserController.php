@@ -88,9 +88,14 @@ class UserController extends AbstractController
         $this->view->renderHtml('admin/users/edit.php', ['title' => $title, 'user' => $user]);
     }
 
-    public function delete(int $userId)
+    public function delete(int $userId): void
     {
         $user = User::getById($userId);
+
+        $oldImageName = $user->getAvatar();
+
+        $uploader = new ImageUploader(__DIR__ . '/../../../www/uploads/', $oldImageName);
+
 
         if ($user === null) {
 
@@ -109,6 +114,8 @@ class UserController extends AbstractController
 
 
         $user->delete();
+
+        $uploader->delete();
 
         header('Location: /admin/users', true, 302);
 
