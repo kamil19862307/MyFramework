@@ -51,7 +51,7 @@ class UserController extends AbstractController
 
         $user = User::getById($userId);
 
-
+        $oldImageName = $user->getAvatar();
 
         if (!empty($_POST)) {
             try {
@@ -59,9 +59,11 @@ class UserController extends AbstractController
                 if (!empty($_FILES['avatar'])) {
                     $file = $_FILES['avatar'];
 
-                    $uploader = new ImageUploader(__DIR__ . '/../../../www/uploads/');
+                    $uploader = new ImageUploader(__DIR__ . '/../../../www/uploads/', $oldImageName);
 
                     $fileName = $uploader->upload($file);
+
+
 
                     $_POST['avatar'] = $fileName;
 

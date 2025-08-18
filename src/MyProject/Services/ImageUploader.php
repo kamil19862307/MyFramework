@@ -13,7 +13,7 @@ class ImageUploader
 
     private array $allowedExtentions = ['png', 'jpg', 'jpeg', 'gif'];
 
-    public function __construct(string $uploadDir)
+    public function __construct(string $uploadDir, private string $oldImageName)
     {
         $this->uploadDir = rtrim($uploadDir, '/') . '/';
 
@@ -48,6 +48,7 @@ class ImageUploader
         $fileName = uniqid($prefix, true) . '.' . $extension;
 
         $destination = $this->uploadDir . $fileName;
+        $fullNameToOldImage = $this->uploadDir . $this->oldImageName;
 
         // Если такая картринка уже есть, то выдаём исключение
         if (file_exists($destination)) {
@@ -57,6 +58,11 @@ class ImageUploader
         // Если не получается загрузить картинку, то выдаём исключение
         if (!move_uploaded_file($file['tmp_name'], $destination)) {
             throw new InvalidArgumentException('Не могу загрузить файл, что-то полшо не так');
+        }
+
+        // Удаляем старую картинку
+        if (file_exists($fullNameToOldImage)) {
+            unlink($fullNameToOldImage);
         }
 
         return $fileName;
