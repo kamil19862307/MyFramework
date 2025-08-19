@@ -130,6 +130,7 @@ class User extends ActiveRecordEntity
 
         $user->nickname = $userData['nickname'];
         $user->email = $userData['email'];
+        $user->setAvatar('noavatar.png');
         $user->passwordHash = password_hash($userData['password'], PASSWORD_DEFAULT);
         $user->isConfirmed = false;
         $user->role = 'user';

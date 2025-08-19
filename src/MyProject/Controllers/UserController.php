@@ -23,7 +23,7 @@ class UserController extends AbstractController
         $this->view->renderHtml('admin/users.php', ['title' => $title, 'users' => $users]);
     }
 
-    public function add()
+    public function add(): void
     {
         $title = 'Создание пользователя';
 

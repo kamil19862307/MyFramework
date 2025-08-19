@@ -40,7 +40,8 @@ class ArticleController extends AbstractController
             [
                 'article' => $article,
                 'comments' => $comments,
-                'isAdmin' => $isAdmin
+                'isAdmin' => $isAdmin,
+                'user' => $this->user,
             ]);
     }
 
