@@ -12,6 +12,10 @@ try {
         throw new \MyProject\Exceptions\CliException('Class "' . $className . '" not found');
     }
 
+    if (!is_subclass_of($className, MyProject\Cli\AbstractCommand::class)) {
+        throw new \MyProject\Exceptions\CliException('Class "' . $className . '" not subclass of MyProject\Cli\AbstractCommand');
+    }
+
     $params = [];
 
     foreach ($argv as $argument) {
