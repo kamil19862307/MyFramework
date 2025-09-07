@@ -2,6 +2,8 @@
 
 namespace MyProject\View;
 
+use http\Exception\RuntimeException;
+
 class View
 {
     private array $extraVars = [];
@@ -13,6 +15,15 @@ class View
     public function setVar(string $name, $value)
     {
         $this->extraVars[$name] = $value;
+    }
+
+    public function displayJson($data, int $code = 200): void
+    {
+        header('Content-type: application/json; charset=utf-8');
+
+        http_response_code($code);
+
+        echo json_encode($data);
     }
 
     public function renderHtml(string $templateName, array $vars = [], int $responceCode = 200): void

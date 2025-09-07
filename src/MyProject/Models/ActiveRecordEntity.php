@@ -4,7 +4,7 @@ namespace MyProject\Models;
 
 use MyProject\Services\Db;
 
-abstract class ActiveRecordEntity
+abstract class ActiveRecordEntity implements \JsonSerializable
 {
     /**
      * @var int
@@ -36,6 +36,11 @@ abstract class ActiveRecordEntity
         $camelCaseName = $this->underscoreToCamelCase($name);
 
         $this->$camelCaseName = $value;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->mapPropertiesToDbFormat();
     }
 
     private function underscoreToCamelCase(string $source): string
