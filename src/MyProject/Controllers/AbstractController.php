@@ -21,4 +21,8 @@ class AbstractController
         $this->view->setVar('currentUser', $this->user);
     }
 
+    public function getInputData(): array
+    {
+        return $input = json_decode(file_get_contents('php://input'), true);
+    }
 }
