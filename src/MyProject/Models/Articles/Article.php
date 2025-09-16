@@ -13,6 +13,8 @@ class Article extends ActiveRecordEntity
 
     protected string $text;
 
+    protected int $isSent;
+
     protected int $authorId;
 
     public function getAuthorId(): int
@@ -65,6 +67,23 @@ class Article extends ActiveRecordEntity
         return $parser->text($this->getText());
     }
 
+    public function isSent(): int
+    {
+        return $this->isSent;
+    }
+
+    public function setIsSent(int $isSent): void
+    {
+        $this->isSent = $isSent;
+    }
+
+    public function markAsSent(): void
+    {
+        $this->isSent = 1;
+
+        $this->save();
+    }
+
     public static function createFromArray(array $fields, User $user): Article
     {
         if (empty($fields['name'])) {
@@ -73,6 +92,10 @@ class Article extends ActiveRecordEntity
 
         if (empty($fields['text'])) {
             throw new InvalidArgumentException('Текст статьи не может быть пустым');
+        }
+
+        if (empty($fields['isSent'])) {
+            $fields['isSent'] = 0;
         }
 
         if (!$user->isAdmin()) {
@@ -84,6 +107,7 @@ class Article extends ActiveRecordEntity
         $article->setAuthor($user);
         $article->setName($fields['name']);
         $article->setText($fields['text']);
+        $article->setIsSent($fields['isSent']);
 
         $article->save();
 
