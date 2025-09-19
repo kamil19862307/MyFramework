@@ -3,6 +3,8 @@
 namespace MyProject\Cli;
 
 use MyProject\Models\Articles\Article;
+use MyProject\Services\TelegramNotifier;
+
 
 class SendNewArticleNotification extends AbstractCommand
 {
@@ -14,8 +16,10 @@ class SendNewArticleNotification extends AbstractCommand
             return;
         }
 
-        foreach ($articles as $article) {
+        $notifier = new TelegramNotifier($_ENV['TELEGRAM_BOT_TOKEN'], $_ENV['TELEGRAM_CHAT_ID']);
 
+        foreach ($articles as $article) {
+            $notifier->sendMessage('Добавлена новая статья: ' . $article->getName() . '. Автор: ' . $article->getAuthor()->getNickname());
             $article->markAsSent();
         }
     }

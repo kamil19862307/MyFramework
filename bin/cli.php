@@ -5,6 +5,10 @@ try {
     // Автозагрузка
     require __DIR__ . '/../vendor/autoload.php';
 
+    // Переменные окружения
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+    $dotenv->load();
+
     // Составляем полное имя класса, добавив нэймспейс
     $className = '\\MyProject\\Cli\\' . array_shift($argv);
 
