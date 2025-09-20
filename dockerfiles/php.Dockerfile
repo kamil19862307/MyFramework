@@ -12,5 +12,7 @@ RUN apk add --no-cache \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug
 
+RUN apk add --no-cache curl
+
 # Настройка Xdebug
 COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
